@@ -1,28 +1,21 @@
-name: CI/CD Pipeline
-
-on: [push, pull_request]
-
+name: Build Android
+on:
+  push:
+    branches: [main]
 jobs:
-  build-and-test:
-    runs-on: macOS-latest
+  build:
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: yarn
 
-    - name: Run tests
-      run: npm test
+      - name: Build Android Release
+        run: cd android && ./gradlew assembleRelease
 
-    - name: Build Docker Image
-      run: docker build -t react-native-app .
-
-    - name: Push Docker Image
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: user/react-native-app:latest
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: release
+          path: android/app/build/outputs/apk/release/app-release.apk
