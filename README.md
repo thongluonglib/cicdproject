@@ -1,80 +1,174 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Reference
+
+[https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd](https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd)
 
 # Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## For Android
 
-## Step 1: Start the Metro Server
+### Step 1: Create **.github/workflows/android-ci-cd.yml** and add code bellow
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+```js
+name: Build and Upload Android APK
 
-To start Metro, run the following command from the _root_ of your React Native project:
+on:
+  push:
+    branches: [main]  # Replace with your desired branches
 
-```bash
-# using npm
-npm start
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
 
-# OR using Yarn
-yarn start
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Install Java
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: adopt
+          cache: gradle
+      
+
+      # Set up Node.js environment (adjust versions as needed)
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # configure cash for gradle : will help to reduce build time
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
+      - name: Make Gradlew Executable
+        run: cd android && chmod +x ./gradlew
+
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.KEY_STORE_SIGN }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+          RELEASE_KEYSTORE_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }} 
+
+        run: |
+          cd android/app && echo $ENCODED_STRING > keystore-b64.txt
+          base64 -d keystore-b64.txt > my-upload-key.keystore
+
+      # Build Android APK
+      - name: Generate App APK
+        env:
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+          RELEASE_KEYSTORE_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
+        run: cd android && ./gradlew assembleRelease --stacktrace
+
+      # Upload APK as an artifact
+      - name: Upload application
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: android/app/build/outputs/apk/release/*.apk
+          # retention-days: 3
+
 ```
 
-## Step 2: Start your Application
+### Step 2. Create my-upload-key.keystore
+   **Go to android/app folder**
+   ```sh
+      cd android/app
+   ```
+   **Create my-upload-key.keystore**
+   ```sh
+      sudo keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+   ```
+   with
+   
+   MYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore
+   MYAPP_UPLOAD_KEY_ALIAS=my-key-alias
+   MYAPP_UPLOAD_STORE_PASSWORD=*****
+   MYAPP_UPLOAD_KEY_PASSWORD=*****
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+   At android/app folder run code bellow to convert my-upload-key.keystore to base64
+   ```sh
+      openssl base64 < my-upload-key.keystore | tr -d '\n' | tee my-upload-key.base64.txt
+   ```
 
-### For Android
+<img width="634" alt="image" src="https://github.com/user-attachments/assets/66d8df62-bc83-42bb-afa0-609030e6b4f0">
 
-```bash
-# using npm
-npm run android
 
-# OR using Yarn
-yarn android
+
+### Step 3. Config Release app
+
+Go to **android/app/build.gradle** and add config
+
+```sh
+signingConfigs {
+        ...
+        release{
+            storeFile file("./my-upload-key.keystore")
+            storePassword System.getenv("RELEASE_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("RELEASE_KEYSTORE_ALIAS")
+            keyPassword System.getenv("RELEASE_KEY_PASSWORD")
+        }
+}
+```
+```sh
+buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            ...
+            signingConfig signingConfigs.debug
+            ...
+        }
+    }
 ```
 
-### For iOS
+## Step 4. Config Github variables environment
 
-```bash
-# using npm
-npm run ios
+1. Go to **github Project** and choose **Setting** then choose **Environments**
 
-# OR using Yarn
-yarn ios
-```
+   <img width="983" alt="image" src="https://github.com/user-attachments/assets/4fa1f7ae-82e6-4245-bde9-2679c2269474">
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+2. Click **secrets** if you haven't secrects yet, let click **New Environment**
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+3. Then sroll down and **Add environment serects** with
 
-## Step 3: Modifying your App
+   KEY_STORE_SIGN: get in my-upload-key.base64.txt (get at Step 2)
+   MYAPP_UPLOAD_KEY_ALIAS: is MYAPP_UPLOAD_KEY_ALIAS (get at Step 2)
+   MYAPP_UPLOAD_KEY_PASSWORD: is MYAPP_UPLOAD_KEY_PASSWORD (get at Step 2)
+   MYAPP_UPLOAD_STORE_PASSWORD: is MYAPP_UPLOAD_STORE_PASSWORD (get at Step 2)
+   
+   <img width="827" alt="image" src="https://github.com/user-attachments/assets/4ae170a9-0e1f-49ff-b0c9-07e4ea766e09">
 
-Now that you have successfully run the app, let's modify it.
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+## Step 5. Commit and push code to main
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## Step 6. Go to github action and choose your pipeline and download .apk file
 
-## Congratulations! :tada:
+<img width="1342" alt="image" src="https://github.com/user-attachments/assets/65860344-8cdb-404e-8645-95b02e246865">
 
-You've successfully run and modified your React Native App. :partying_face:
+<img width="1409" alt="image" src="https://github.com/user-attachments/assets/88fcef25-0d41-482f-bda1-539d1ea233e0">
 
-### Now what?
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
 
-# Troubleshooting
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
 
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
-# cicdproject
