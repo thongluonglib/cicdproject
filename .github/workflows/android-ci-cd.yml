@@ -19,16 +19,7 @@ jobs:
           java-version: 17
           distribution: adopt
           cache: gradle
-      # sign generated apk
-      - name: Sign APK
-        id: sign_app
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.MYAPP_KEYSTORE_PATH }}
-          alias: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
+      
 
       # Set up Node.js environment (adjust versions as needed)
       - name: Set up Node.js environment
@@ -44,6 +35,17 @@ jobs:
       - name: Build Android APK
         run: cd android && ./gradlew assembleRelease
 
+      # sign generated apk
+      # - name: Sign APK
+      #   id: sign_app
+      #   uses: r0adkll/sign-android-release@v1
+      #   with:
+      #     releaseDirectory: android/app/build/outputs/apk/release
+      #     signingKeyBase64: ${{ secrets.MYAPP_KEYSTORE_PATH }}
+      #     alias: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+      #     keyStorePassword: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
+          
       # Upload APK as an artifact
       - name: Upload application
         uses: actions/upload-artifact@v3
