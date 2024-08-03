@@ -5,10 +5,10 @@ on:
     branches: [main]  # Replace with your desired branches
 
 jobs:
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[ci build\]/
   build-and-upload:
+    only:
+      variables:
+        - $CI_COMMIT_MESSAGE =~ /\[ci build\]/
     runs-on: ubuntu-latest
 
     steps:
