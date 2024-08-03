@@ -19,6 +19,14 @@ jobs:
           java-version: 17
           distribution: adopt
           cache: gradle
+
+       # Setup env   
+      - name: Set up environment variables
+        run: |
+          echo "KEYSTORE_PASSWORD=${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "KEY_ALIAS=${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}" >> $GITHUB_ENV
+
       # Set up Node.js environment (adjust versions as needed)
       - name: Set up Node.js environment
         uses: actions/setup-node@v3
