@@ -1,6 +1,8 @@
 # Reference
 
-[https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd](https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd)
+1. [https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd](https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd)
+
+2. [https://www.obytes.com/blog/react-native-ci-cd-github-action](https://www.obytes.com/blog/react-native-ci-cd-github-action)
 
 # Getting Started
 
