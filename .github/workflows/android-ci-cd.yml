@@ -9,6 +9,7 @@ jobs:
     only:
       variables:
         - $CI_COMMIT_MESSAGE =~ /\[ci build\]/
+    
     runs-on: ubuntu-latest
 
     steps:
