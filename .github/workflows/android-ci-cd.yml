@@ -12,6 +12,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Install Java
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: adopt
+          cache: gradle
       # Set up Node.js environment (adjust versions as needed)
       - name: Set up Node.js environment
         uses: actions/setup-node@v3
