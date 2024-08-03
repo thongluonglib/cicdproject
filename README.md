@@ -146,20 +146,27 @@ buildTypes {
 
 ## Step 4. Config Github variables environment
 
-1. Go to **github Project** and choose **Setting** then choose **Environments**
+1. Go to **github Project** and choose **Setting** 
 
-   <img width="983" alt="image" src="https://github.com/user-attachments/assets/4fa1f7ae-82e6-4245-bde9-2679c2269474">
+  <img width="1416" alt="image" src="https://github.com/user-attachments/assets/8ad7d40f-600d-485f-b891-99cb58d13df3">
 
-2. Click **secrets** if you haven't secrects yet, let click **New Environment**
+2. Then scroll down and choose **Secrets and Variables** in left panel and click **Actions** like bellow
+   
+   <img width="1216" alt="image" src="https://github.com/user-attachments/assets/a715a513-ab5a-4b4b-bf09-a6bfc01ec5fb">
 
-3. Then sroll down and **Add environment serects** with
 
+2. At **Add environment serects** click **New responsitory secrets**
+
+   ```
    KEY_STORE_SIGN: get in my-upload-key.base64.txt (get at Step 2)
    MYAPP_UPLOAD_KEY_ALIAS: is MYAPP_UPLOAD_KEY_ALIAS (get at Step 2)
    MYAPP_UPLOAD_KEY_PASSWORD: is MYAPP_UPLOAD_KEY_PASSWORD (get at Step 2)
    MYAPP_UPLOAD_STORE_PASSWORD: is MYAPP_UPLOAD_STORE_PASSWORD (get at Step 2)
-   
-   <img width="827" alt="image" src="https://github.com/user-attachments/assets/4ae170a9-0e1f-49ff-b0c9-07e4ea766e09">
+   ```
+
+  <img width="1164" alt="image" src="https://github.com/user-attachments/assets/0687e5e9-739f-4b63-867b-d2cca8f7dcdd">
+
+  <img width="946" alt="image" src="https://github.com/user-attachments/assets/3c617337-2f3d-4e59-84aa-683e15822246">
 
 
 ## Step 5. Commit and push code to main
