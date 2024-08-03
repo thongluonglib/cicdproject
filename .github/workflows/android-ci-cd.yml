@@ -1,38 +1,35 @@
-name: Android Build # name of the workflow
+name: Build and Upload Android APK
 
 on:
-  workflow_dispatch: # To trigger manual build
-  release:
-    types: [published] # only run the workflow when a new release has been published
+  push:
+    branches: [main]  # Replace with your desired branches
 
 jobs:
-  android-build:
-    name: Android Build
-    runs-on: ubuntu-latest # using ubuntu latest version / or you can use a specific version
+  build-and-upload:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Check out Git repository # clone the repo to local ci workspace
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Set up our JDK environment # setup JDK environment: mandatory as we need to build  android project
-        uses: actions/setup-java@v1.4.3
+      # Install Java
+      - name: Install Java
+        uses: actions/setup-java@v3
         with:
-          java-version: 1.8
+          java-version: 17
+          distribution: adopt
+          cache: gradle
+      
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Restore node_modules from cache
-        uses: actions/cache@v2
-        id: yarn-cache
+      # Set up Node.js environment (adjust versions as needed)
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v3
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: 18
 
-      - name: Install dependencies # install project deps with --frozen-lockfile to make sure we will have the same packages version ( very recommended  on running yarn install on ci)
-        run: yarn install --frozen-lockfile
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
 
       # configure cash for gradle : will help to reduce build time
       - name: Cache Gradle Wrapper
@@ -48,14 +45,16 @@ jobs:
           key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-caches-
+
       - name: Make Gradlew Executable
         run: cd android && chmod +x ./gradlew
 
+      # Build Android APK
       - name: Generate App APK
         run: |
           cd android && ./gradlew assembleRelease --no-daemon
 
-      # sign generated apk
+        # sign generated apk
       - name: Sign APK
         id: sign_app
         uses: r0adkll/sign-android-release@v1
@@ -65,3 +64,58 @@ jobs:
           alias: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
           keyPassword: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
+
+      # Upload APK as an artifact
+      - name: Upload application
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: android/app/build/outputs/apk/release/*.apk
+
+
+# name: "Build Android Staging app"
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       - name: Install Java
+#         uses: actions/setup-java@v3
+#         with:
+#           java-version: 17
+#           distribution: adopt
+#           cache: gradle
+
+#       - name: Validate Gradle wrapper
+#         uses: gradle/wrapper-validation-action@v1
+
+#       - name: Setup Node  
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '18'
+#           cache: 'yarn'
+
+#       - name: Run Yarn Install
+#         run: |
+#              npm i -g corepack
+#              yarn install
+
+#       - name: Build application
+#         run: |
+#              cd android
+#              ./gradlew assembleRelease
+
+#       - name: Upload application
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: app
+#           path: android/app/build/outputs/apk/release/app-release.apk
+#           retention-days: 3
