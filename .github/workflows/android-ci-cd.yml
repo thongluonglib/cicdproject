@@ -77,12 +77,11 @@ jobs:
           # retention-days: 3
           
       # Distribute app to Firebase App Distribution for testing / use google play internal track if you have a google play account
-      - name: Upload artifact to Firebase App Distribution
-        id: testing_outputs
+      - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-        appId: ${{secrets.FIREBASE_APP_ID}}
-        serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
-        groups: testers
-        file: android/app/build/outputs/apk/release/*.apk
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: testers
+          file: android/app/build/outputs/apk/release/*.apk
 
