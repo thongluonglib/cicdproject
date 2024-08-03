@@ -138,7 +138,7 @@ buildTypes {
         }
         release {
             ...
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release // <-- Ad this line
             ...
         }
     }
@@ -171,7 +171,9 @@ buildTypes {
 
 ## Step 5. Commit and push code to main
 
-## Step 6. Go to github action and choose your pipeline and download .apk file
+## Step 6. In your github project Click Action tab and choose your pipeline and download .apk file
+
+<img width="1358" alt="image" src="https://github.com/user-attachments/assets/e376d047-cf54-4658-bb27-3636f800974e">
 
 <img width="1342" alt="image" src="https://github.com/user-attachments/assets/65860344-8cdb-404e-8645-95b02e246865">
 
