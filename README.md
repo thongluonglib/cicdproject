@@ -1,4 +1,3 @@
-# Reference
 
 1. [https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd](https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd)
 
@@ -181,6 +180,73 @@ buildTypes {
 
 <img width="1409" alt="image" src="https://github.com/user-attachments/assets/88fcef25-0d41-482f-bda1-539d1ea233e0">
 
+
+<h1>We have completed CI/CD with  github action</h1>
+
+# Advance
+## add Firebase Distribute to github action
+
+### 1. Add code bellow to android-ci-cd.yml file
+
+```sh
+# Distribute app to Firebase App Distribution for testing / use google play internal track if you have a google play account
+- name: upload artifact to Firebase App Distribution
+  uses: wzieba/Firebase-Distribution-Github-Action@v1
+  with:
+    appId: ${{secrets.ANDROID_FIREBASE_APP_ID}}
+    serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+    groups: testers
+    file: android/app/build/outputs/apk/release/*.apk
+```
+
+<img width="1367" alt="image" src="https://github.com/user-attachments/assets/50434db1-2a70-4297-9ca9-fb32cb926170">
+
+
+### Step 2: Add ANDROID_FIREBASE_APP_ID, CREDENTIAL_FILE_CONTENT
+
+<img width="1183" alt="image" src="https://github.com/user-attachments/assets/de392d2d-7c62-443a-a209-ac349ac6e942">
+
+# How to get ANDROID_FIREBASE_APP_ID
+
+1. Go to [https://console.firebase.google.com/](https://console.firebase.google.com/)
+
+2. Click Project Setting
+   
+<img width="439" alt="image" src="https://github.com/user-attachments/assets/48265335-b5f3-4156-87a4-a701053c6bd9">
+
+3. Create an Android App and see **App ID** 
+
+<img width="862" alt="image" src="https://github.com/user-attachments/assets/9798f3db-de1b-4094-9bc4-3141df56dd65">
+
+4. Copy android **App ID** to **ANDROID_FIREBASE_APP_ID**
+
+
+# How to get CREDENTIAL_FILE_CONTENT
+1. Go to Service on Google cloud:
+
+[https://console.cloud.google.com/iam-admin/serviceaccounts](https://console.cloud.google.com/iam-admin/serviceaccounts)
+
+2. Click CREATE SERVICE ACCOUNT
+
+   <img width="1080" alt="image" src="https://github.com/user-attachments/assets/fd053643-6cb0-4af5-b962-4693a935d841">
+
+3. Then click your service account at:
+   
+   <img width="864" alt="image" src="https://github.com/user-attachments/assets/4c2d06eb-94ff-4c97-811d-4557786553d7">
+
+4. Click **KEYS** -> **Add Key** -> **Create New Key** -> Choose **JSON** and Click **Create**
+
+   Then **CREDENTIAL JSON** will automatically download
+   
+   <img width="1073" alt="image" src="https://github.com/user-attachments/assets/7630157d-a576-4ecc-b31f-404e742a8fbe">
+
+   <img width="804" alt="image" src="https://github.com/user-attachments/assets/0419c318-a608-43c8-ac3b-5b9c9c7c32db">
+
+6.  Copy the summary of **CREDENTIAL JSON** to **CREDENTIAL_FILE_CONTENT**
+   
+   <img width="376" alt="image" src="https://github.com/user-attachments/assets/fcc45081-7edf-421a-9ab3-99c30fee9d99">
+
+  <img width="643" alt="image" src="https://github.com/user-attachments/assets/4d871c16-9382-4b0a-bd90-960c230f9d0c">
 
 
 
