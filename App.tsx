@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 
 import {
-  Colors,
+  Colors, 
   DebugInstructions,
   Header,
   LearnMoreLinks,
