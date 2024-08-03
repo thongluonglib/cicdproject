@@ -8,7 +8,7 @@ jobs:
   build-and-upload:
     only:
         variables:
-            - $CI_COMMIT_MESSAGE =~ /\[ci build ios\]/
+            - $CI_COMMIT_MESSAGE =~ /\[ci build\]/
 
     runs-on: ubuntu-latest
 
