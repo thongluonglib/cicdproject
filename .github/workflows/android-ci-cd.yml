@@ -49,10 +49,24 @@ jobs:
       - name: Make Gradlew Executable
         run: cd android && chmod +x ./gradlew
 
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.KEY_STORE_SIGN }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+          RELEASE_KEYSTORE_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }} 
+
+        run: |
+          echo $ENCODED_STRING > keystore-b64.txt
+          base64 -d keystore-b64.txt > keystore.keystore
+
       # Build Android APK
       - name: Generate App APK
-        run: |
-          cd android && ./gradlew assembleRelease --no-daemon
+        env:
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+          RELEASE_KEYSTORE_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
+        run: cd android && ./gradlew assembleRelease --stacktrace
 
         # sign generated apk
       # - name: Sign APK
@@ -65,6 +79,7 @@ jobs:
       #     keyStorePassword: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
       #     keyPassword: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
 
+      
       # Upload APK as an artifact
       - name: Upload application
         uses: actions/upload-artifact@v3
