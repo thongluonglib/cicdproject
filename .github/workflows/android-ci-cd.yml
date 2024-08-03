@@ -55,15 +55,15 @@ jobs:
           cd android && ./gradlew assembleRelease --no-daemon
 
         # sign generated apk
-      - name: Sign APK
-        id: sign_app
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.MYAPP_KEYSTORE_PATH }}
-          alias: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
+      # - name: Sign APK
+      #   id: sign_app
+      #   uses: r0adkll/sign-android-release@v1
+      #   with:
+      #     releaseDirectory: android/app/build/outputs/apk/release
+      #     signingKeyBase64: ${{ secrets.MYAPP_KEYSTORE_PATH }}
+      #     alias: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+      #     keyStorePassword: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
 
       # Upload APK as an artifact
       - name: Upload application
