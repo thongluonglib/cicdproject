@@ -57,8 +57,8 @@ jobs:
           RELEASE_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }} 
 
         run: |
-          echo $ENCODED_STRING > keystore-b64.txt
-          base64 -d keystore-b64.txt > keystore.keystore
+          cd android/app && echo $ENCODED_STRING > keystore-b64.txt
+          base64 -d keystore-b64.txt > my-upload-key.keystore
 
       # Build Android APK
       - name: Generate App APK
