@@ -20,7 +20,7 @@ jobs:
       - run: npm install
 
       # Build Android APK
-      - run: react-native run-android --configuration Release
+      - run: npx react-native run-android --configuration Release
 
       # Upload APK as an artifact
       - uses: actions/upload-artifact@v3
