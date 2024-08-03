@@ -8,7 +8,7 @@
 
 ### Step 1: Create **.github/workflows/android-ci-cd.yml** and add code bellow
 
-```js
+```sh
 name: Build and Upload Android APK
 
 on:
@@ -63,9 +63,9 @@ jobs:
       - name: Decode Keystore
         env:
           ENCODED_STRING: ${{ secrets.KEY_STORE_SIGN }}
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
-          RELEASE_KEYSTORE_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
-          RELEASE_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }} 
+          MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+          MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+          MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }} 
 
         run: |
           cd android/app && echo $ENCODED_STRING > keystore-b64.txt
@@ -74,9 +74,9 @@ jobs:
       # Build Android APK
       - name: Generate App APK
         env:
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
-          RELEASE_KEYSTORE_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
-          RELEASE_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
+          MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+          MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+          MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
         run: cd android && ./gradlew assembleRelease --stacktrace
 
       # Upload APK as an artifact
@@ -86,6 +86,8 @@ jobs:
           name: android-apk
           path: android/app/build/outputs/apk/release/*.apk
           # retention-days: 3
+
+
 
 ```
 
@@ -122,10 +124,10 @@ Go to **android/app/build.gradle** and add config
 signingConfigs {
         ...
         release{
-            storeFile file("./my-upload-key.keystore")
-            storePassword System.getenv("RELEASE_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("RELEASE_KEYSTORE_ALIAS")
-            keyPassword System.getenv("RELEASE_KEY_PASSWORD")
+            storeFile file('my-upload-key.keystore')
+            storePassword System.getenv('MYAPP_UPLOAD_STORE_PASSWORD')
+            keyAlias System.getenv('MYAPP_UPLOAD_KEY_ALIAS')
+            keyPassword System.getenv('MYAPP_UPLOAD_KEY_PASSWORD')
         }
 }
 ```
@@ -136,7 +138,7 @@ buildTypes {
         }
         release {
             ...
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             ...
         }
     }
