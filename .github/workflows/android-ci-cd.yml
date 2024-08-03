@@ -1,0 +1,29 @@
+name: Build and Upload Android APK
+
+on:
+  push:
+    branches: [main]  # Replace with your desired branches
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Set up Node.js environment (adjust versions as needed)
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Install dependencies
+      - run: npm install
+
+      # Build Android APK
+      - run: react-native run-android --configuration Release
+
+      # Upload APK as an artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
