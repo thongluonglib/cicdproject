@@ -75,6 +75,7 @@ jobs:
           name: android-apk
           path: android/app/build/outputs/apk/release/*.apk
           # retention-days: 3
+          
       # Distribute app to Firebase App Distribution for testing / use google play internal track if you have a google play account
       - name: Upload artifact to Firebase App Distribution
         id: testing_outputs
