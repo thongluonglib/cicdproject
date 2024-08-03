@@ -52,9 +52,9 @@ jobs:
       - name: Decode Keystore
         env:
           ENCODED_STRING: ${{ secrets.KEY_STORE_SIGN }}
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
-          RELEASE_KEYSTORE_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
-          RELEASE_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }} 
+          MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+          MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+          MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }} 
 
         run: |
           cd android/app && echo $ENCODED_STRING > keystore-b64.txt
@@ -63,9 +63,9 @@ jobs:
       # Build Android APK
       - name: Generate App APK
         env:
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
-          RELEASE_KEYSTORE_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
-          RELEASE_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
+          MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}
+          MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}
+          MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}
         run: cd android && ./gradlew assembleRelease --stacktrace
 
       # Upload APK as an artifact
