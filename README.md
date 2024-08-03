@@ -1,4 +1,3 @@
-<img width="804" alt="image" src="https://github.com/user-attachments/assets/bae2c6bf-e83f-4213-bfa5-12e53cfabdb5"># Reference
 
 1. [https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd](https://medium.com/@dcostalloyd90/automating-android-builds-with-github-actions-a-step-by-step-guide-2a02a54f59cd)
 
