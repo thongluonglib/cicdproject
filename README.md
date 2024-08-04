@@ -222,17 +222,20 @@ buildTypes {
 
 
 # How to get CREDENTIAL_FILE_CONTENT
+
 1. Go to Service on Google cloud:
 
-[https://console.cloud.google.com/iam-admin/serviceaccounts](https://console.cloud.google.com/iam-admin/serviceaccounts)
+  [https://console.cloud.google.com/iam-admin/serviceaccounts](https://console.cloud.google.com/iam-admin/serviceaccounts)
 
 2. Click CREATE SERVICE ACCOUNT
 
    <img width="1080" alt="image" src="https://github.com/user-attachments/assets/fd053643-6cb0-4af5-b962-4693a935d841">
 
+
 3. Then click your service account at:
    
    <img width="864" alt="image" src="https://github.com/user-attachments/assets/4c2d06eb-94ff-4c97-811d-4557786553d7">
+
 
 4. Click **KEYS** -> **Add Key** -> **Create New Key** -> Choose **JSON** and Click **Create**
 
@@ -241,6 +244,7 @@ buildTypes {
    <img width="1073" alt="image" src="https://github.com/user-attachments/assets/7630157d-a576-4ecc-b31f-404e742a8fbe">
 
    <img width="804" alt="image" src="https://github.com/user-attachments/assets/0419c318-a608-43c8-ac3b-5b9c9c7c32db">
+
 
 6.  Copy the summary of **CREDENTIAL JSON** to **CREDENTIAL_FILE_CONTENT**
    
