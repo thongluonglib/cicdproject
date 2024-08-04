@@ -1,8 +1,13 @@
 name: Build and Upload Android APK
 
+# on:
+#   push:
+#     branches: [main]  # Replace with your desired branches
+
 on:
-  push:
-    branches: [main]  # Replace with your desired branches
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[ci build\]/
 
 jobs:
   build-and-upload:
