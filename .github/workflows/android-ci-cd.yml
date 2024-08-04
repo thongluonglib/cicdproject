@@ -1,13 +1,12 @@
 name: Build and Upload Android APK
 
-# on:
-#   push:
-#     branches: [main]  # Replace with your desired branches
+on:
+  push:
+    branches: [main]  # Replace with your desired branches
 workflow:
   rules:
     - if: '$CI_COMMIT_MESSAGE =~ /\[ci build\]/'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "main"'
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
