@@ -190,13 +190,13 @@ buildTypes {
 
 ```sh
 # Distribute app to Firebase App Distribution for testing / use google play internal track if you have a google play account
-- name: upload artifact to Firebase App Distribution
+- name: Upload artifact to Firebase App Distribution
   uses: wzieba/Firebase-Distribution-Github-Action@v1
   with:
     appId: ${{secrets.ANDROID_FIREBASE_APP_ID}}
     serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
     groups: testers
-    file: android/app/build/outputs/apk/release/*.apk
+    file: android/app/build/outputs/apk/release/app-release.apk
 ```
 
 <img width="1367" alt="image" src="https://github.com/user-attachments/assets/50434db1-2a70-4297-9ca9-fb32cb926170">
